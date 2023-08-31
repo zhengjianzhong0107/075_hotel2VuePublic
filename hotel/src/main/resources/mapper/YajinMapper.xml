@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.dao.YajinDao">
+	<resultMap type="com.etc.model.Yajin" id="ya">
+		<result property="oid" column="oid"/>
+		<result property="hid" column="hid"/>
+		<result property="money" column="money"/>
+		<result property="type" column="type"/>
+		<result property="zt" column="zt"/>
+		<result property="stime" column="stime"/>
+		<result property="ttime" column="ttime"/>
+	</resultMap>
+	
+ 	<insert id="insert" parameterType="yajin">
+ 		insert into yajin values(#{oid},#{hid},#{money},#{type},1,now(),null)
+	</insert>
+
+
+	<update id="updateTui" parameterType="yajin">
+ 		update yajin set zt=2,ttime=now()
+ 		where oid=#{oid}
+	</update>
+
+ 	<update id="update" parameterType="yajin">
+ 		update yajin set hid=#{hid},money=#{money},type=#{type},stime=#{stime},ttime=#{ttime}
+ 		where oid=#{oid}
+	</update>
+ 	
+	<delete id="delete" parameterType="int">
+		delete from yajin where oid=#{oid}
+ 	</delete>
+ 	
+	<select id="selectOne" resultMap="ya" parameterType="int">
+		select * from yajin where oid=#{oid}
+ 	</select>
+ 	
+	<select id="selectList" resultMap="ya">
+		select * from yajin
+ 	</select>
+ 	
+	<select id="total" resultType="int">
+		select count(*) from yajin
+ 	</select> 	
+ 	
+	<select id="selectByPage" resultMap="ya" parameterType="hashmap">		
+		select * from yajin limit ${min},${max}
+ 	</select>
+ 	
+	<delete id="deleteList" >
+		delete from yajin where oid in
+		<foreach item="oid" collection="array" 
+		 open="(" close=")" separator=",">
+		 #{oid}
+		</foreach>
+ 	</delete>
+ 	
+	<select id="selectByProperty" resultMap="ya" parameterType="hashmap">		
+		select * from yajin where ${pname}=#{val}
+ 	</select>
+ 	
+</mapper>
+

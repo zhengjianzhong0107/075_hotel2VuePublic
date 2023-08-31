@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.dao.UsersDao">
+	<resultMap type="com.etc.model.Users" id="us">
+		<result property="utel" column="utel"/>
+		<result property="upwd" column="upwd"/>
+		<result property="uname" column="uname"/>
+		<result property="usex" column="usex"/>
+		<result property="uphoto" column="uphoto"/>
+	</resultMap>
+	
+ 	<insert id="insert" parameterType="users">
+ 		insert into users values(#{utel},#{upwd},#{uname},#{usex},#{uphoto})
+	</insert>
+	
+ 	<update id="update" parameterType="users">
+ 		update users set upwd=#{upwd},uname=#{uname},usex=#{usex},uphoto=#{uphoto}
+ 		where utel=#{utel}
+	</update>
+ 	
+	<delete id="delete" parameterType="string">
+		delete from users where utel=#{utel}
+ 	</delete>
+ 	
+	<select id="selectOne" resultMap="us" parameterType="string">
+		select * from users where utel=#{utel}
+ 	</select>
+ 	
+	<select id="selectList" resultMap="us">
+		select * from users
+ 	</select>
+ 	
+	<select id="total" resultType="int">
+		select count(*) from users
+ 	</select> 	
+ 	
+	<select id="selectByPage" resultMap="us" parameterType="hashmap">		
+		select * from users limit ${min},${max}
+ 	</select>
+ 	
+	<delete id="deleteList" >
+		delete from users where utel in
+		<foreach item="utel" collection="array" 
+		 open="(" close=")" separator=",">
+		 #{utel}
+		</foreach>
+ 	</delete>
+ 	
+	<select id="selectByProperty" resultMap="us" parameterType="hashmap">		
+		select * from users where ${pname}=#{val}
+ 	</select>
+ 	
+</mapper>
+

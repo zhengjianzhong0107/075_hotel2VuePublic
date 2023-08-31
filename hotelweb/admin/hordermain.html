@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<title>horder here</title>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="../ele/index.css"/>
+		<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../ele/index.js" type="text/javascript" charset="utf-8"></script>
+		<script src="common.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<el-breadcrumb separator="/">
+			  <el-breadcrumb-item>首页</el-breadcrumb-item>
+			  <el-breadcrumb-item>订单管理</el-breadcrumb-item>
+			  <el-breadcrumb-item>列表展示</el-breadcrumb-item>
+			</el-breadcrumb>
+			<el-row>
+				<el-col style="text-align: center;"><h2>订单管理</h2></el-col>
+			</el-row>
+			<el-table :data="list" ref="horders" style="width: 100%;">
+				<el-table-column type="selection" align="center"></el-table-column>
+				<el-table-column prop="oid" label="订单编号" align="center" width='200' ></el-table-column>
+				<el-table-column prop="tname" label="房型" align="center"  width='120'></el-table-column>
+				<el-table-column prop="otime" label="下单时间" align="center" width='150'></el-table-column>
+				<!-- <el-table-column prop="starttime" label="入住时间" align="center" width='120'></el-table-column>
+				<el-table-column prop="endtime" label="离店时间" align="center" width='120'></el-table-column> -->
+				<el-table-column label="天数" align="center">
+					<template slot-scope="scope">
+						<span>{{scope.row.days}}天</span>
+					</template>
+				</el-table-column>
+				<el-table-column prop="total" label="总价格" align="center"></el-table-column>
+				<el-table-column label="状态" align="center">
+					<template slot-scope="scope">
+						<span v-if="scope.row.state==1">未确认</span>
+						<span v-if="scope.row.state==2">已撤销</span>
+						<span  v-if="scope.row.state==3">已确认</span>
+						<span  v-if="scope.row.state==4">已完成</span>
+						<span  v-if="scope.row.state==5">正在入住</span>
+					</template>
+				</el-table-column>
+				<el-table-column label="操作" align="center" width="220px">
+					<template slot-scope="scope">
+						<el-button size="small" type="primary" :disabled='scope.row.state==2||scope.row.state==4||scope.row.state==5' @click="toupdate(scope.$index, show=true, url='update', action='修改')">修改</el-button>
+						<el-button size="small" type="primary" :disabled='scope.row.state==2||scope.row.state==4||scope.row.state==5' @click="ruzhu(scope.row.oid)">入住</el-button>
+						<el-button size="small" type="danger" @click="deletehorder(scope.$index)">删除</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+			<el-row style="margin-top: 5px;">
+				<el-col :xs="3" :sm="3">
+					<el-button type="danger" size="medium" @click="deleteList">删除选中项</el-button>
+				</el-col>
+				<el-col :xs="15" :sm="15">
+					<el-pagination :current-page.sync="curpage" :page-size.sync="line" :page-sizes="pagelist"
+						layout="total, sizes, prev, pager, next, jumper" :total="total">
+					 </el-pagination>
+				</el-col>
+				<el-col :xs="6" :sm="6" style="text-align: right;">
+					<!-- <el-button type="primary" size="medium" style="width: 180px;" @click="toinsert(show=true, url='insert', action='录入')">添加</el-button> -->
+				</el-col>
+			</el-row>
+			
+			<el-dialog title="入住" :visible.sync="show1">
+				<el-form ref="form" :model="rzinfo" label-width="80px" size="mini">
+					
+					<el-form-item label="订单编号">
+						<el-input v-model="rzinfo.oid"></el-input>
+					</el-form-item>
+					<el-form-item label="姓名">
+						<el-input v-model="rzinfo.name"></el-input>
+					</el-form-item>
+					<el-form-item label="身份证">
+						<el-input v-model="rzinfo.idcard"></el-input>
+					</el-form-item>
+					<el-form-item label="手机号">
+						<el-input v-model="rzinfo.mobile"></el-input>
+					</el-form-item>
+					<el-form-item size="large">
+						<el-button type="primary" size="medium" @click="addruzhu">入住</el-button>
+					</el-form-item>
+					
+					<el-form-item size="large">
+						<el-button type="primary" size="medium" @click="luruwanbi">录入完毕</el-button>
+					</el-form-item>
+				</el-form>
+			</el-dialog>
+			
+			<el-dialog :title="action" :visible.sync="show">
+				<el-form ref="form" :model="horder" label-width="80px" size="mini">
+					
+					<el-form-item label="用户编号" >
+						<el-input v-model="horder.userid" readonly></el-input>
+					</el-form-item>
+					<el-form-item label="房型" >
+						<el-select v-model="horder.tid" placeholder="请选择房型">
+							<el-option :label="types.tname" v-for="types in typesList" :value="types.tid"></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="下单时间">
+						<el-input v-model="horder.otime" readonly></el-input>
+					</el-form-item>
+					<el-form-item label="入住时间">
+						<el-input v-model="horder.starttime" readonly></el-input>
+					</el-form-item>
+					<el-form-item label="离店时间">
+						<el-input v-model="horder.endtime" readonly></el-input>
+					</el-form-item>
+					<el-form-item label="天数">
+						<el-input v-model="horder.days" readonly></el-input>
+					</el-form-item>
+					<el-form-item label="总价格">
+						<el-input v-model="horder.total" readonly></el-input>
+					</el-form-item>
+					<el-form-item label="备注信息">
+						<el-input v-model="horder.beizhu" readonly></el-input>
+					</el-form-item>
+					<el-form-item label="预定人">
+						<el-input v-model="horder.lxname" readonly></el-input>
+					</el-form-item>
+					<el-form-item label="预留电话">
+						<el-input v-model="horder.lxtel" readonly></el-input>
+					</el-form-item>
+					<el-form-item label="身份证">
+						<el-input v-model="horder.lccard" readonly></el-input>
+					</el-form-item>
+					<el-form-item label="状态">
+						<el-select v-model="horder.state" placeholder="请选择状态">
+							<el-option label="未确认" :value="1" :key='1'></el-option>
+							<el-option label="已确认" :value="3" :key='3'></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item size="large">
+						<el-button type="primary" size="medium" @click="modify">保存</el-button>
+					</el-form-item>
+				</el-form>
+			</el-dialog>
+		</div>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el: "#app",
+				data: {
+					show: false,
+					show1: false,
+					url: '',
+					action: '',
+					horder: {},
+					list: [],
+					curpage: 1,
+					total: 0,
+					pagelist: [3,4,5],
+					line: 3,
+					userList: [],
+					typesList: [],
+					rzinfo:{}
+				},
+				created: function() {
+					axios.post("horder/selectTotal").then(res=>{
+						this.total = res.data;
+					})
+					axios.post("user/selectList").then(res=>{
+						this.userList = res.data;
+					})
+					axios.post("types/selectList").then(res=>{
+						this.typesList = res.data;
+					})
+				},
+				computed: {
+					totalpage: function() {
+						return parseInt((this.line-1+this.total)/this.line);
+					},
+					param: function() {
+						return "page="+this.curpage+"&line="+this.line;
+					}
+				},
+				watch: {
+					curpage: function() {
+						this.selectByPage();
+					},
+					line: function() {
+						if(this.curpage>this.totalpage){
+							this.curpage = this.totalpage;
+						}else{
+							this.selectByPage();
+						}
+					},
+					total: function() {
+						if(this.curpage>this.totalpage && this.totalpage!=0){
+							this.curpage = this.totalpage;
+						}else{
+							this.selectByPage();
+						}
+					}
+				},
+				methods: {
+					selectByPage: function() {
+						if(this.total==0){
+							this.list = [];
+							return;
+						}
+						axios.post("horder/selectByPage?"+this.param).then(res=>{
+							this.list = res.data;
+						});
+					},
+					deletehorder: function(i) {
+						this.$confirm("确认删除？", "提示", {
+							confirmButtonText: "确定",
+							cancelButtonText: "取消",
+							type: "warning"
+						}).then(()=>{
+							axios.post("horder/delete?oid="+this.list[i].oid).then(res=>{
+								if(res.data=="1"){
+									this.$message({
+										type: "success",
+										message: "操作成功！"
+									});
+									this.list.splice(i, 1);
+									this.total -= 1;
+								}else{
+									this.$message({
+										type: "error",
+										message: "操作失败！"
+									});
+								}
+							})
+						}).catch(() => {
+							this.$message({
+								type: "info",
+								message: "已取消删除！"
+							});          
+						});
+					},
+					toinsert: function() {
+						this.horder = {};
+					},
+					toupdate: function(i) {
+						this.horder = this.list[i];
+					},
+					modify: function() {
+						axios.post("horder/"+this.url, this.horder).then(res=>{
+							if(res.data=="1"){
+								this.$message({
+									type: "success",
+									message: "操作成功！"
+								});
+								if(this.url.lastIndexOf("insert")>=0){
+									this.total += 1;
+									this.horder = {};
+								}else{
+									//this.selectByPage();
+								}
+							}else{
+								this.$message({
+									type: "error",
+									message: "操作失败！"
+								});
+							}
+						})
+					},
+					deleteList: function() {
+						let selections = this.$refs.horders.selection;
+						if(selections.length==0){
+							this.$message({
+								type: "error",
+								message: "必须选中一行！"
+							});
+							return;
+						}
+						let oids = [];
+						for(let i=0; i<selections.length; i++){
+							oids.push(selections[i].oid);
+						}
+						this.$confirm("是否删除所有选中项？", "提示", {
+							confirmButtonText: "确定",
+							cancelButtonText: "取消",
+							type: "warning"
+						}).then(()=>{
+							var params = new URLSearchParams();
+							params.append("oids", oids);
+							axios.post("horder/deleteList", params).then(res=>{
+								if(res.data=="1"){
+									this.total -= oids.length;
+									this.$message({
+										type: "success",
+										message: "删除成功！"
+									});
+								}else{
+									this.$message({
+										type: "error",
+										message: "删除失败！"
+									});
+								}
+							})
+						}).catch(() => {
+							this.$message({
+								type: "info",
+								message: "已取消删除！"
+							});
+						});
+					},
+					ruzhu(oid){
+						this.show1 = true;
+						this.rzinfo.oid = oid; 
+					},
+					addruzhu:function() {
+						axios.post("rzinfo/insert", this.rzinfo).then(res=>{
+							if(res.data=="1"){
+								this.$message({
+									type: "success",
+									message: "操作成功！"
+								});
+								this.rzinfo.name = '';
+								this.rzinfo.idcard = '';
+								this.rzinfo.mobile = '';
+							}else{
+								this.$message({
+									type: "error",
+									message: "操作失败！"
+								});
+							}
+						})
+					},
+					luruwanbi(){
+						this.show1 = false;
+						let obj = {oid:this.rzinfo.oid,state:5}
+						axios.post("horder/update", obj).then(res=>{
+							if(res.data=="1"){
+								this.$message({
+									type: "success",
+									message: "操作成功！"
+								});
+								this.selectByPage();
+							}
+						})
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

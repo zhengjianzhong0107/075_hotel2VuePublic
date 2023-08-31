@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.dao.RuzhuinfoDao">
+	<resultMap type="com.etc.model.Ruzhuinfo" id="ru">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="idcard" column="idcard"/>
+		<result property="mobile" column="mobile"/>
+		<result property="oid" column="oid"/>
+	</resultMap>
+	
+ 	<insert id="insert" parameterType="ruzhuinfo">
+ 		insert into rzinfo values(default ,#{name},#{idcard},#{mobile},#{oid})
+	</insert>
+	
+ 	<update id="update" parameterType="ruzhuinfo">
+ 		update rzinfo set name=#{name},idcard=#{idcard},mobile=#{mobile},oid=#{oid} 
+ 		where id=#{id}
+	</update>
+ 	
+	<delete id="delete" parameterType="int">
+		delete from rzinfo where id=#{id}
+ 	</delete>
+ 	
+	<select id="selectOne" resultMap="ru" parameterType="int">
+		select * from rzinfo where id=#{id}
+ 	</select>
+ 	
+	<select id="selectList" resultMap="ru">
+		select * from rzinfo
+ 	</select>
+ 	
+	<select id="total" resultType="int">
+		select count(*) from rzinfo
+ 	</select> 	
+ 	
+	<select id="selectByPage" resultMap="ru" parameterType="hashmap">		
+		select * from rzinfo order by id desc limit ${min},${max}
+ 	</select>
+ 	
+	<delete id="deleteList" >
+		delete from rzinfo where id in
+		<foreach item="id" collection="array" 
+		 open="(" close=")" separator=",">
+		 #{id}
+		</foreach>
+ 	</delete>
+ 	
+	<select id="selectByProperty" resultMap="ru" parameterType="hashmap">		
+		select * from rzinfo where ${pname}=#{val}
+ 	</select>
+ 	
+</mapper>
+

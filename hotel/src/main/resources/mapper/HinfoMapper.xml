@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.dao.HinfoDao">
+	<resultMap type="com.etc.model.Hinfo" id="hi">
+		<result property="hid" column="hid"/>
+		<result property="area" column="area"/>
+		<result property="floor" column="floor"/>
+		<result property="window" column="window"/>
+		<result property="bed" column="bed"/>
+		<result property="htext" column="htext"/>
+		<result property="tid" column="tid"/>
+
+		<result property="tname" column="tname"/>
+	</resultMap>
+	
+ 	<insert id="insert" parameterType="hinfo">
+ 		insert into hinfo values(#{hid},#{area},#{floor},#{window},#{bed},#{htext},#{tid})
+	</insert>
+	
+ 	<update id="update" parameterType="hinfo">
+ 		update hinfo set area=#{area},floor=#{floor},window=#{window},bed=#{bed},htext=#{htext},tid=#{tid} 
+ 		where hid=#{hid}
+	</update>
+ 	
+	<delete id="delete" parameterType="int">
+		delete from hinfo where hid=#{hid}
+ 	</delete>
+ 	
+	<select id="selectOne" resultMap="hi" parameterType="int">
+		select * from hinfo,types where types.tid=hinfo.tid and hid=#{hid}
+ 	</select>
+ 	
+	<select id="selectList" resultMap="hi">
+		select * from hinfo,types where types.tid=hinfo.tid
+ 	</select>
+ 	
+	<select id="total" resultType="int">
+		select count(*) from hinfo
+ 	</select> 	
+ 	
+	<select id="selectByPage" resultMap="hi" parameterType="hashmap">		
+		select * from hinfo,types where types.tid=hinfo.tid limit ${min},${max}
+ 	</select>
+ 	
+	<delete id="deleteList" >
+		delete from hinfo where hid in
+		<foreach item="hid" collection="array" 
+		 open="(" close=")" separator=",">
+		 #{hid}
+		</foreach>
+ 	</delete>
+ 	
+	<select id="selectByProperty" resultMap="hi" parameterType="hashmap">		
+		select * from hinfo,types where types.tid=hinfo.tid and ${pname}=#{val}
+ 	</select>
+ 	
+</mapper>
+

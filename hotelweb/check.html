@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title> Rooms</title>
+<link href="test/bootstrap.css" rel="stylesheet" type="text/css">
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<!-- Custom Theme files -->
+<link href="test/style.css" rel="stylesheet" type="text/css">
+<!-- Custom Theme files -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="keywords" content="">
+
+<link href="img/bootstrap.css" rel="stylesheet" type="text/css">
+<link href="img/style.css" rel="stylesheet" type="text/css">
+<link href="img/animate.css" rel="stylesheet" type="text/css">
+<link href="https://fonts.useso.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="img/jquery-1.11.1.min.js"></script>
+
+<script type="text/javascript" src="js/jquery-1.12.3.min.js"></script>
+
+<script type="text/javascript" async="" src="img/auto_dup"></script><script type="text/javascript" async="" src="img/hcjm"></script><script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!--webfont-->
+<script type="text/javascript" src="test/login.js"></script>
+<script src="img/jquery.easydropdown.js"></script>
+<!--Animation-->
+<script src="img/wow.min.js"></script>
+<script>
+	new WOW().init();
+</script>
+
+	<script type="text/javascript" src="js/vue.min.js"></script>
+	<script type="text/javascript" src="js/axios.min.js"></script>
+	<script type="text/javascript" src="js/jquery.js"></script>
+	
+</head>
+<body>
+<div id="app">
+		<div class="header">
+		   <div class="col-sm-8 header-left">
+					 <div class="logo">
+						<a href="#"><img src="img/logo.png" alt=""></a>
+					 </div>
+					 <div class="menu">
+						  <a class="toggleMenu" href="#" style="display: none;"><img src="img/nav.png" alt=""></a>
+						    <ul class="nav" id="nav">
+						    	<li class="active"><a href="webindex.html">首页</a></li>
+						    	<li><a href="room.html">客房</a></li>
+						    	<li><a href="webgonggao.html">公告</a></li>
+						  	<li><a href="weborder.html">我的订单</a></li>
+								<div class="clearfix"></div>
+							</ul>
+						
+				    </div>	
+				     
+						
+						<!----//search-scripts---->						
+	    		    <div class="clearfix"></div>
+	    	    </div>
+	    	    
+	    	    
+	            	<div class="col-sm-4 header_right" >
+	    		      <div id="loginContainer"><a id="loginButton"><img src="img/login.png"><span>{{temp}}</span></a>
+	    		      <a id="regButton"><img src="img/login.png"><span>注册</span></a>
+						    <div id="loginBox" style="display: none;">                
+						        <form id="loginForm">
+						                <fieldset id="body">
+						                	<fieldset>
+						                          <label for="email">账号</label>
+						                          <input type="text" name="email" id="email" v-model="yh.yid">
+						                    </fieldset>
+						                    <fieldset>
+						                            <label for="password">密码</label>
+						                            <input type="password" name="password" id="yh.pwd" v-model="yh.pwd">
+						                     </fieldset>
+						                    <input type="button" id="login" value="登录" @click="login">
+						                	<label for="checkbox"><input type="checkbox" id="checkbox"> <i>记住密码</i></label>
+						            	</fieldset>
+						                 <span><a href="#">忘记密码?</a></span>
+							      </form>
+				              </div>
+							  <div id="loginBox" style="display: none;">                
+						        <form id="loginForm">
+						                <fieldset id="body">
+						                	<fieldset>
+						                          <label for="email">账号</label>
+						                          <input type="text" v-model="y.yid">
+						                    </fieldset>
+						                	<fieldset>
+						                          <label for="email">姓名</label>
+						                          <input type="text" v-model="y.name">
+						                    </fieldset>
+						                    <fieldset>
+						                            <label for="password">密码</label>
+						                            <input type="password" name="password" id="y.pwd" v-model="y.pwd">
+						                     </fieldset>
+						                	<fieldset>
+						                          <label for="email">电话</label>
+						                          <input type="text" v-model="y.tel">
+						                    </fieldset>
+						                	<fieldset>
+						                          <label for="email">邮箱</label>
+						                          <input type="text" v-model="y.email">
+						                    </fieldset>
+						                	<fieldset>
+						                          <label for="email">身份证</label>
+						                          <input type="text" v-model="y.idcard">
+						                    </fieldset>
+						                    <input type="button" id="login" value="注册" @click="reg">
+						            	</fieldset>
+							      </form>
+				              </div>
+			             </div>
+		                 <div class="clearfix"></div>
+	               </div>
+	               
+	                <div class="clearfix"></div>
+				</div>
+	                 
+	                 
+	                 
+	                 
+	                 
+			
+	              
+   
+   	 
+   	 
+   <div class="living_middle">
+   	  <div class="container">
+   	  	<h2 class="title block-title" style="text-align:left">房间预订</h2>
+   	   
+		<div class="col-md-4 wow fadeInLeft animated" data-wow-delay="0.4s" style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInLeft;">
+   	    	<div class="living_box"><a href="#">
+			    <img :src="type.image" class="img-responsive" width="330" height="180">
+				<span class="sale-box">
+				  <span class="sale-label">Rooms</span>
+			    </span>
+				</a>
+				<div class="living_desc">
+				<h3><a href="#">{{type.tname}}</a></h3>
+				<a href="#" class="btn3">Rent</a>
+				<p class="price">￥{{type.price}}</p>
+				</div>
+			    <table border="1" class="propertyDetails">
+                <tbody><tr>
+                   <td><img src="test/area.png" alt="" style="margin-right:7px;">{{type.area}}m</td>
+                   <td><img src="test/bed.png" alt="" style="margin-right:7px;">{{type.bed}} Beds</td>
+                   <td><img src="test/drop.png" alt="" style="margin-right:7px;">{{type.weiyu}} Baths</td>
+                    </tr>
+                </tbody></table>
+			</div>
+			<div class="living_box">
+			   详细介绍：{{type.ttext}}
+			</div>
+		 </div>
+		  
+		  <div class="col-md-8 wow fadeInLeft animated" data-wow-delay="0.4s" style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInLeft;">
+   	    	<div class="living_box" style="font-size:16px">
+			   
+			   	入住时间：<input v-model="begin" type="date"/> &nbsp;&nbsp;&nbsp;
+				离店时间：<input v-model="end" type="date"/><br/>
+				<br/>
+				入住天数：<strong><span style="color:red">*</span>{{days}}天</strong><br/><br/>
+				总价格：<strong v-if="days==NaN">0</strong>
+					<strong v-if="days!=NaN" style="color:red,font-size:22px;font-weight:700"><span style="color:red">*</span>
+					{{days*type.price}}元</strong><br/><br/>
+				
+				<div v-if="type.num>0">
+					<input type="button" value="预订" :disabled="yuNum==0" @click="test">
+				</div>
+				<div style="color: red">
+					{{msg}}
+				</div>
+			</div>
+		 </div>
+		 
+		 
+   	    </div>
+   </div>
+  
+  
+    <div class="footer" style="background-color:black">
+   	<div class="container">
+   	 
+	  <div class="footer_grids">
+	     <div class="footer-grid">
+			<h4>Ipsum Quis</h4>
+			<ul class="list1">
+				<li><a href="#">Contact</a></li>
+				<li><a href="#">Mirum est</a></li>
+				<li><a href="#">Placerat facer</a></li>
+				<li><a href="#">Claritatem</a></li>
+				<li><a href="#">Sollemnes </a></li>
+			</ul>
+		  </div>
+		  <div class="footer-grid">
+			<h4>Quis Ipsum</h4>
+			<ul class="list1">
+				<li><a href="#">Placerat facer</a></li>
+				<li><a href="#">Claritatem</a></li>
+				<li><a href="#">Sollemnes </a></li>
+				<li><a href="#">Claritas</a></li>
+				<li><a href="#">Mirum est</a></li>
+			</ul>
+		  </div>
+		  <div class="footer-grid last_grid">
+			<h4>Follow Us</h4>
+			<ul class="footer_social wow fadeInLeft animated" data-wow-delay="0.4s" style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInLeft;">
+			  <li><a href="#"> <i class="fb"> </i> </a></li>
+			  <li><a href="#"><i class="tw"> </i> </a></li>
+			  <li><a href="#"><i class="google"> </i> </a></li>
+			  <li><a href="#"><i class="u_tube"> </i> </a></li>
+		 	</ul>
+		 	<div class="copy wow fadeInRight animated" data-wow-delay="0.4s" style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInRight;">
+              <p>Copyright © 2016.Company name All rights reserved.</p>
+	        </div>
+		  </div>
+		  <div class="clearfix"> </div>
+	   </div>
+	   
+      </div>
+   </div>
+   
+   
+</div>		
+
+	<script type="text/javascript">
+		var vm = new Vue({
+			el:'#app',
+			data:{
+				type:{},
+				begin:'',
+				end:'',
+				temp:"登录",
+				y:{},
+				yuNum:0,
+				msg:"",
+				order:{
+					yid:'',
+					tid:'',
+					start:'',
+					end:'',
+					days:0,
+					price:0,
+					total:0,
+					temp:1
+				},
+				obj:{},
+				yh:{}
+			},
+			computed:{
+	            days:function(){
+	            	let sDate1 = Date.parse(this.begin);
+	            	let sDate2 = Date.parse(this.end);
+	            	let dateSpan = sDate2 - sDate1;
+	            	let iDays = Math.floor(dateSpan / (24 * 3600 * 1000));
+	            	
+					if(!isNaN(iDays) && this.begin<this.end){
+						this.order.start = this.begin;
+						this.order.end = this.end;
+						
+						axios.post("horder/selectYuNum", this.order).then(res=>{
+							vm.yuNum = res.data;
+							if(vm.yuNum == 0){
+								vm.msg = "当前日期房间不足！";
+							}else{
+								vm.msg = "剩余房间数："+vm.yuNum+"！";
+							}
+						});
+					}else{
+						iDays = 0;
+						this.msg = "请正确选择日期！";
+					}
+					this.order.days = iDays;
+			        return iDays;
+	            }
+	        },
+			created(){
+	        	let url = location.search;
+	        	let tid1;
+				if ( url.indexOf( "?tid" ) != -1 ) { 
+					tid1 = url.substring(url.indexOf( "?" )+5);
+					this.order.tid = tid1;
+					sessionStorage.setItem("tid",tid1);
+					this.getType(tid1);
+					
+				}
+	        	let obj1 = JSON.parse(sessionStorage.getItem('yh'));
+				if(obj1!=null){
+					this.order.yid = obj1.yid;
+					this.obj = obj1;
+					this.temp = "欢迎 "+this.obj.name+" 登录";
+				}else{
+					alert("请先登录!");
+				}
+			},
+			methods:{
+				getType:function(tid){
+					axios.post("types/selectOne?tid="+tid).then(res=>{
+						vm.type = res.data;
+						vm.order.price = vm.type.price;
+					});
+				},
+				test:function(){
+					if(this.obj==null){
+						alert("请先登录");
+					}else{
+						let total1 = this.days*this.type.price;
+						this.order.total = total1;
+						
+						//生成订单，修改库存
+						axios.post("horder/insert",this.order).then(res=>{
+							
+							if(res.data==1){
+								vm.yuNum--;
+								vm.msg = "结算成功！剩余房间数："+vm.yuNum;
+								//location.href='weborder.html';
+							}
+						})
+						
+						
+						
+					}
+				},
+			    login:function(){
+					axios.post("yonghu/selectOne?yid="+vm.yh.yid).then(res=>{
+						
+						let yg = res.data;
+						if(yg!=null&&yg.pwd==vm.yh.pwd){
+							alert("登录成功!");
+							vm.temp="欢迎 "+this.obj.name+" 登录";
+							sessionStorage.setItem('yh',JSON.stringify(yg));
+							location.reload();
+						}else{
+							alert("登录失败!");
+							vm.temp="登录";
+						}
+					});
+				},
+			    reg:function(){
+					axios.post("yonghu/insert", this.y).then(res=>{
+						if(res.data){
+							alert("注册成功!");
+						}else{
+							alert("注册失败!");
+						}
+					});
+				},
+			}	
+		})
+	</script>					
+</body>
+</html>

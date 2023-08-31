@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>国际酒店</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Stylesheets -->
+  <!-- Dropdown Menu -->
+  <link rel="stylesheet" href="css/superfish.css">
+  <!-- Owl Slider -->
+  <!-- <link rel="stylesheet" href="css/owl.carousel.css"> -->
+  <!-- <link rel="stylesheet" href="css/owl.theme.default.min.css"> -->
+  <!-- Date Picker -->
+  <link rel="stylesheet" href="css/bootstrap-datepicker.min.css">
+  <!-- CS Select -->
+  <link rel="stylesheet" href="css/cs-select.css">
+  <link rel="stylesheet" href="css/cs-skin-border.css">
+
+  <!-- Themify Icons -->
+  <link rel="stylesheet" href="css/themify-icons.css">
+  <!-- Flat Icon -->
+  <link rel="stylesheet" href="css/flaticon.css">
+  <!-- Icomoon -->
+  <link rel="stylesheet" href="css/icomoon.css">
+  <!-- Flexslider  -->
+  <link rel="stylesheet" href="css/flexslider.css">
+
+  <!-- Style -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Modernizr JS -->
+  <script src="js/modernizr-2.6.2.min.js"></script>
+  <!-- FOR IE9 below -->
+  <!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+  <link rel="stylesheet" type="text/css" href="ele/index.css" />
+</head>
+
+<body>
+  <div id="hotel">
+    <div id="fh5co-wrapper">
+      <div id="fh5co-page">
+        <div id="fh5co-header">
+          <header id="fh5co-header-section">
+            <div class="container">
+              <div class="nav-header">
+                <a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle"><i></i></a>
+                <h1 id="fh5co-logo"><a href="index.html">hotel</a></h1>
+                <nav id="fh5co-menu-wrap" role="navigation">
+                  <ul class="sf-menu" id="fh5co-primary-menu">
+                    <li><a href="index.html">网站首页</a></li>
+                    <li><a class="active" href="hotel.html">房间介绍</a></li>
+                    <li><a href="services.html">服务介绍</a></li>
+                    <li><a href="blog.html">新闻中心</a></li>
+                    <li><a href="contact.html">联系我们</a></li>
+                    <li>
+                      <a v-if="temp" @click="login">登录|注册</a>
+                      <a v-else href="person.html">个人中心</a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </header>
+
+        </div>
+        <!-- end:fh5co-header -->
+        <div class="fh5co-parallax" style="background-image: url(images/slider1.jpg);"
+          data-stellar-background-ratio="0.5">
+          <div class="overlay"></div>
+          <div class="container">
+            <div class="row">
+              <div
+                class="col-md-12 col-md-offset-0 col-sm-12 col-sm-offset-0 col-xs-12 col-xs-offset-0 text-center fh5co-table">
+                <div class="fh5co-intro fh5co-table-cell">
+                  <h1 class="text-center">选择我们的酒店</h1>
+                  <p>最便利的活动送给你们，最艰难的工作留给我们</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="fh5co-hotel-section">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-4" v-for="t in types">
+                <div class="hotel-content">
+                  <div class="hotel-grid" :style="{background: 'url(images/'+t.image+')'}">
+                    <div class="price"><small>最低</small><span>￥{{t.price}}/天</span></div>
+                    <a class="book-now text-center" style="cursor: pointer;" @click="info(t)"><i
+                        class="ti-calendar"></i> 立即预定</a>
+                  </div>
+                  <div class="desc">
+                    <h3><a href="#">{{t.tname}}</a></h3>
+                    <p>
+                      {{t.ttext}}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+        <footer id="footer" class="fh5co-bg-color">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="copyright">
+                  <p>&copy; 2022 All Rights Reserved.
+                  </p>
+                  <img src="images/gw.jpg" />
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="row">
+                  <div class="col-md-3">
+                    <h3>快速链接</h3>
+                    <ul class="link">
+                      <li><a href="index.html">网站首页</a></li>
+                      <li><a href="#">房间介绍</a></li>
+                      <li><a href="#">服务介绍</a></li>
+                      <li><a href="#">新闻中心</a></li>
+                      <li><a href="#">联系我们</a></li>
+                    </ul>
+                  </div>
+                  <div class="col-md-3">
+                    <h3>特色服务</h3>
+                    <ul class="link">
+                      <li><a>餐厅、酒吧</a></li>
+                      <li><a>接送、泳池</a></li>
+                      <li><a>Spa、健身</a></li>
+                    </ul>
+                  </div>
+                  <div class="col-md-6">
+                    <h3>订阅</h3>
+                    <p>
+                      特色服务和齐全的设施等着你的到来
+                    </p>
+                    <form action="#" id="form-subscribe">
+                      <div class="form-field">
+                        <input type="email" placeholder="邮箱" id="email">
+                        <input type="submit" id="submit" value="发送">
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </footer>
+
+      </div>
+      <!-- END fh5co-page -->
+
+    </div>
+  </div>
+  <!-- END fh5co-wrapper -->
+
+  <!-- Javascripts -->
+  <script src="js/jquery-2.1.4.min.js"></script>
+  <!-- Dropdown Menu -->
+  <script src="js/hoverIntent.js"></script>
+  <script src="js/superfish.js"></script>
+  <!-- Bootstrap -->
+  <script src="js/bootstrap.min.js"></script>
+  <!-- Waypoints -->
+  <script src="js/jquery.waypoints.min.js"></script>
+  <!-- Counters -->
+  <script src="js/jquery.countTo.js"></script>
+  <!-- Stellar Parallax -->
+  <script src="js/jquery.stellar.min.js"></script>
+  <!-- Owl Slider -->
+  <!-- // <script src="js/owl.carousel.min.js"></script> -->
+  <!-- Date Picker -->
+  <script src="js/bootstrap-datepicker.min.js"></script>
+  <!-- CS Select -->
+  <script src="js/classie.js"></script>
+  <script src="js/selectFx.js"></script>
+  <!-- Flexslider -->
+  <script src="js/jquery.flexslider-min.js"></script>
+
+  <script src="js/custom.js"></script>
+  <script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/base.js" type="text/javascript" charset="utf-8"></script>
+  <script src="ele/index.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript">
+    let vm = new Vue({
+      el: '#hotel',
+      data: {
+        showLogin: false,
+        users: {},
+        temp: true,
+        lunbos: [],
+        types: []
+      },
+      created () {
+        if (sessionStorage.user) {
+          this.temp = false;
+        } else {
+          this.temp = true;
+        }
+
+        this.getAllTypes();
+      },
+      methods: {
+        // login() {
+        // 	//alert(JSON.stringify(this.users))
+        // 	axios.post('user/login', this.users).then(res => {
+        // 		if (res.data) {
+        // 			sessionStorage.setItem('user', JSON.stringify(res.data));
+        // 			this.temp = false;
+        // 			this.showLogin = false;
+        // 		} else {
+        // 			this.$message({
+        // 				message: '登录失败',
+        // 				type: 'warning'
+        // 			});
+        // 		}
+        // 	})
+        // },
+        login () {
+          location = 'login.html'
+        },
+        getUrl (photo) {
+          return ""
+        },
+        getAllTypes () {
+          axios.post('types/selectList').then(res => {
+            this.types = res.data
+          })
+        },
+        info (t) {
+          location = 'hotelinfo.html?tid=' + t.tid;
+        },
+        per () {
+          console.log('11')
+          location = 'person.html';
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>

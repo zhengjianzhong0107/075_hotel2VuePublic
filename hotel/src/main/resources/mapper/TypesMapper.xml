@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.dao.TypesDao">
+	<resultMap type="com.etc.model.Types" id="ty">
+		<result property="tid" column="tid"/>
+		<result property="tname" column="tname"/>
+		<result property="image" column="image"/>
+		<result property="ttext" column="ttext"/>
+		<result property="price" column="price"/>
+		<result property="area" column="area"/>
+		<result property="bed" column="bed"/>
+		<result property="weiyu" column="weiyu"/>
+		<result property="num" column="num"/>
+	</resultMap>
+	
+ 	<insert id="insert" parameterType="types">
+ 		insert into types values(default,#{tname},#{image},#{ttext},#{price},#{area},#{bed},#{weiyu},#{num})
+	</insert>
+	
+ 	<update id="update" parameterType="types">
+ 		update types set tname=#{tname},
+ 		image=#{image},ttext=#{ttext},price=#{price},
+ 		area=#{area},bed=#{bed},weiyu=#{weiyu},
+ 		num=#{num}
+ 		where tid=#{tid}
+	</update>
+ 	
+	<delete id="delete" parameterType="int">
+		delete from types where tid=#{tid}
+ 	</delete>
+ 	
+	<select id="selectOne" resultMap="ty" parameterType="int">
+		select * from types where tid=#{tid}
+ 	</select>
+ 	
+	<select id="selectList" resultMap="ty">
+		select * from types
+ 	</select>
+ 	
+	<select id="total" resultType="int">
+		select count(*) from types
+ 	</select> 	
+ 	
+	<select id="selectByPage" resultMap="ty" parameterType="hashmap">		
+		select * from types limit ${min},${max}
+ 	</select>
+ 	
+	<delete id="deleteList" >
+		delete from types where tid in
+		<foreach item="tid" collection="array" 
+		 open="(" close=")" separator=",">
+		 #{tid}
+		</foreach>
+ 	</delete>
+ 	
+	<select id="selectByProperty" resultMap="ty" parameterType="hashmap">		
+		select * from types where ${pname}=#{val}
+ 	</select>
+ 	
+</mapper>
+

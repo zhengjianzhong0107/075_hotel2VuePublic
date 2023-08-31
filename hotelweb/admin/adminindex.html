@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Hotel管理系统</title>
+  <style>
+    * {
+      border: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .el-header,
+    .el-footer {
+      background-color: #B3C0D1;
+      color: #333;
+      text-align: center;
+      line-height: 60px;
+    }
+
+    .el-aside {
+      background-color: #D3DCE6;
+      color: #333;
+      text-align: center;
+      line-height: 100px;
+    }
+
+    .el-main {
+      background-color: #E9EEF3;
+      color: #333;
+      text-align: center;
+      line-height: 160px;
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="../ele/index.css" />
+  <script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../ele/index.js" type="text/javascript" charset="utf-8"></script>
+  <script src="common.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>
+  <div id="app">
+    <el-container>
+      <el-header>Hotel管理系统</el-header>
+      <el-container style="height: 800px;">
+        <el-aside width="200px">
+          <el-menu default-active="1" class="el-menu-vertical-demo">
+            <el-submenu index="1">
+              <template slot="title"><i class="el-icon-menu"></i>用户管理</template>
+              <el-menu-item-group>
+                <el-menu-item index="1-1" @click="url='usermain.html'">用户信息</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="2">
+              <template slot="title"><i class="el-icon-menu"></i>酒店管理</template>
+              <el-menu-item-group>
+                <el-menu-item index="2-1" @click="url='hotelmain.html'">酒店信息</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="3">
+              <template slot="title"><i class="el-icon-menu"></i>酒店房型管理</template>
+              <el-menu-item-group>
+                <el-menu-item index="3-1" @click="url='typesmain.html'">酒店房型信息</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+
+            <el-submenu index="5">
+              <template slot="title"><i class="el-icon-menu"></i>房间管理</template>
+              <el-menu-item-group>
+                <el-menu-item index="5-1" @click="url='hinfomain.html'">房间信息</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="6">
+              <template slot="title"><i class="el-icon-menu"></i>订单管理</template>
+              <el-menu-item-group>
+                <el-menu-item index="6-1" @click="url='hordermain.html'">订单信息</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="8">
+              <template slot="title"><i class="el-icon-menu"></i>押金管理</template>
+              <el-menu-item-group>
+                <el-menu-item index="8-1" @click="url='yajinmain.html'">押金信息</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="7">
+              <template slot="title"><i class="el-icon-menu"></i>入住信息管理</template>
+              <el-menu-item-group>
+                <el-menu-item index="7-1" @click="url='rzinfomain.html'">入住信息信息</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="9">
+              <template slot="title"><i class="el-icon-menu"></i>建议管理</template>
+              <el-menu-item-group>
+                <el-menu-item index="9-1" @click="url='lianximain.html'">建议信息</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <!-- <el-submenu index="10">
+                <el-menu-item index="10-1" @click="url='lianximain.html'">建议信息</el-menu-item>
+            </el-submenu> -->
+            <el-button type="danger" @click="logout">退出登录</el-button>
+          </el-menu>
+        </el-aside>
+        <el-main>
+          <iframe :src="url" width="95%" height="600px" scrolling="auto"></iframe>
+        </el-main>
+      </el-container>
+    </el-container>
+  </div>
+  <script type="text/javascript">
+    var vm = new Vue({
+      el: "#app",
+      data: {
+        url: "usermain.html",
+      },
+      created () {
+        if (!sessionStorage.admin) {
+          location = 'adminlogin.html'
+        }
+      },
+      methods: {
+        logout () {
+          sessionStorage.removeItem('admin');
+          this.temp = true;
+          this.$message({
+            message: '退出成功',
+            type: 'success'
+          });
+          location = 'adminlogin.html'
+        },
+      }
+    })
+  </script>
+</body>
+
+</html>

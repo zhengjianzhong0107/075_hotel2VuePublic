@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.dao.AdminDao">
+	<resultMap type="com.etc.model.Admin" id="ad">
+		<result property="aid" column="aid"/>
+		<result property="aname" column="aname"/>
+		<result property="apwd" column="apwd"/>
+	</resultMap>
+
+	<select id="selectOne" resultMap="ad" parameterType="string">
+		select * from admin where aid=#{aid}
+ 	</select>
+
+</mapper>
+

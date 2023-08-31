@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<title>hotel here</title>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="../ele/index.css"/>
+		<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../ele/index.js" type="text/javascript" charset="utf-8"></script>
+		<script src="common.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<el-breadcrumb separator="/">
+			  <el-breadcrumb-item>首页</el-breadcrumb-item>
+			  <el-breadcrumb-item>酒店管理</el-breadcrumb-item>
+			  <el-breadcrumb-item>列表展示</el-breadcrumb-item>
+			</el-breadcrumb>
+			<el-row>
+				<el-col style="text-align: center;"><h2>酒店管理</h2></el-col>
+			</el-row>
+			<el-table :data="list" ref="hotels" style="width: 100%;">
+				<!-- <el-table-column type="selection" align="center"></el-table-column> -->
+				<el-table-column prop="hid" label="编号" align="center"></el-table-column>
+				<el-table-column prop="htitle" label="酒店名" align="center"></el-table-column>
+				<el-table-column prop="address" label="地址" align="center"></el-table-column>
+				<!-- <el-table-column prop="htext" label="描述" align="center"></el-table-column> -->
+				<el-table-column prop="htel" label="电话" align="center"></el-table-column>
+				<!-- <el-table-column prop="jingdu" label="精度" align="center"></el-table-column>
+				<el-table-column prop="weidu" label="维度" align="center"></el-table-column> -->
+				<el-table-column prop="star" label="星级" align="center"></el-table-column>
+				<el-table-column label="操作" align="center" width="180px">
+					<template slot-scope="scope">
+						<el-button size="small" type="primary" @click="toupdate(scope.$index, show=true, url='update', action='修改')">修改</el-button>
+						<!-- <el-button size="small" type="danger" @click="deletehotel(scope.$index)">删除</el-button> -->
+					</template>
+				</el-table-column>
+			</el-table>
+			<el-row style="margin-top: 5px;">
+				<el-col :xs="3" :sm="3">
+					<!-- <el-button type="danger" size="medium" @click="deleteList">删除选中项</el-button> -->
+				</el-col>
+				<el-col :xs="15" :sm="15">
+					<el-pagination :current-page.sync="curpage" :page-size.sync="line" :page-sizes="pagelist"
+						layout="total, sizes, prev, pager, next, jumper" :total="total">
+					 </el-pagination>
+				</el-col>
+				<el-col :xs="6" :sm="6" style="text-align: right;">
+					<!-- <el-button type="primary" size="medium" style="width: 180px;" @click="toinsert(show=true, url='insert', action='录入')">添加</el-button> -->
+				</el-col>
+			</el-row>
+			<el-dialog :title="action" :visible.sync="show">
+				<el-form ref="form" :model="hotel" label-width="80px" size="mini">
+					<el-form-item label="编号">
+						<el-input v-model="hotel.hid"></el-input>
+					</el-form-item>
+					<el-form-item label="酒店名">
+						<el-input v-model="hotel.htitle"></el-input>
+					</el-form-item>
+					<el-form-item label="地址">
+						<el-input v-model="hotel.address"></el-input>
+					</el-form-item>
+					<el-form-item label="描述">
+						<el-input v-model="hotel.htext" type='textarea'></el-input>
+					</el-form-item>
+					<el-form-item label="电话">
+						<el-input v-model="hotel.htel"></el-input>
+					</el-form-item>
+					<el-form-item label="精度">
+						<el-input v-model="hotel.jingdu"></el-input>
+					</el-form-item>
+					<el-form-item label="维度">
+						<el-input v-model="hotel.weidu"></el-input>
+					</el-form-item>
+					<el-form-item label="星级">
+						<el-input v-model="hotel.star"></el-input>
+					</el-form-item>
+					<el-form-item size="large">
+						<el-button type="primary" size="medium" @click="modify">保存</el-button>
+					</el-form-item>
+				</el-form>
+			</el-dialog>
+		</div>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el: "#app",
+				data: {
+					show: false,
+					url: '',
+					action: '',
+					hotel: {},
+					list: [],
+					curpage: 1,
+					total: 0,
+					pagelist: [3,4,5],
+					line: 3,
+				},
+				created: function() {
+					axios.post("hotel/selectTotal").then(res=>{
+						this.total = res.data;
+					})
+				},
+				computed: {
+					totalpage: function() {
+						return parseInt((this.line-1+this.total)/this.line);
+					},
+					param: function() {
+						return "page="+this.curpage+"&line="+this.line;
+					}
+				},
+				watch: {
+					curpage: function() {
+						this.selectByPage();
+					},
+					line: function() {
+						if(this.curpage>this.totalpage){
+							this.curpage = this.totalpage;
+						}else{
+							this.selectByPage();
+						}
+					},
+					total: function() {
+						if(this.curpage>this.totalpage && this.totalpage!=0){
+							this.curpage = this.totalpage;
+						}else{
+							this.selectByPage();
+						}
+					}
+				},
+				methods: {
+					selectByPage: function() {
+						if(this.total==0){
+							this.list = [];
+							return;
+						}
+						axios.post("hotel/selectByPage?"+this.param).then(res=>{
+							this.list = res.data;
+						});
+					},
+					deletehotel: function(i) {
+						this.$confirm("确认删除？", "提示", {
+							confirmButtonText: "确定",
+							cancelButtonText: "取消",
+							type: "warning"
+						}).then(()=>{
+							axios.post("hotel/delete?hid="+this.list[i].hid).then(res=>{
+								if(res.data=="1"){
+									this.$message({
+										type: "success",
+										message: "操作成功！"
+									});
+									this.list.splice(i, 1);
+									this.total -= 1;
+								}else{
+									this.$message({
+										type: "error",
+										message: "操作失败！"
+									});
+								}
+							})
+						}).catch(() => {
+							this.$message({
+								type: "info",
+								message: "已取消删除！"
+							});          
+						});
+					},
+					toinsert: function() {
+						this.hotel = {};
+					},
+					toupdate: function(i) {
+						this.hotel = this.list[i];
+					},
+					modify: function() {
+						axios.post("hotel/"+this.url, this.hotel).then(res=>{
+							if(res.data=="1"){
+								this.$message({
+									type: "success",
+									message: "操作成功！"
+								});
+								if(this.url.lastIndexOf("insert")>=0){
+									this.total += 1;
+									this.hotel = {};
+								}else{
+									//this.selectByPage();
+								}
+							}else{
+								this.$message({
+									type: "error",
+									message: "操作失败！"
+								});
+							}
+						})
+					},
+					deleteList: function() {
+						let selections = this.$refs.hotels.selection;
+						if(selections.length==0){
+							this.$message({
+								type: "error",
+								message: "必须选中一行！"
+							});
+							return;
+						}
+						let hids = [];
+						for(let i=0; i<selections.length; i++){
+							hids.push(selections[i].hid);
+						}
+						this.$confirm("是否删除所有选中项？", "提示", {
+							confirmButtonText: "确定",
+							cancelButtonText: "取消",
+							type: "warning"
+						}).then(()=>{
+							var params = new URLSearchParams();
+							params.append("hids", hids);
+							axios.post("hotel/deleteList", params).then(res=>{
+								if(res.data=="1"){
+									this.total -= hids.length;
+									this.$message({
+										type: "success",
+										message: "删除成功！"
+									});
+								}else{
+									this.$message({
+										type: "error",
+										message: "删除失败！"
+									});
+								}
+							})
+						}).catch(() => {
+							this.$message({
+								type: "info",
+								message: "已取消删除！"
+							});
+						});
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

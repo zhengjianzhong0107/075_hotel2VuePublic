@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<title>hinfo here</title>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="../ele/index.css"/>
+		<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../ele/index.js" type="text/javascript" charset="utf-8"></script>
+		<script src="common.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<el-breadcrumb separator="/">
+			  <el-breadcrumb-item>首页</el-breadcrumb-item>
+			  <el-breadcrumb-item>房间管理</el-breadcrumb-item>
+			  <el-breadcrumb-item>列表展示</el-breadcrumb-item>
+			</el-breadcrumb>
+			<el-row>
+				<el-col style="text-align: center;"><h2>房间管理</h2></el-col>
+			</el-row>
+			<el-table :data="list" ref="hinfos" style="width: 100%;">
+				<el-table-column type="selection" align="center"></el-table-column>
+				<el-table-column prop="hid" label="房号" align="center"></el-table-column>
+				<el-table-column label="面积" align="center">
+					<template slot-scope="scope">
+						<span>{{scope.row.area}}平</span>
+					</template>
+				</el-table-column>
+				<el-table-column label="楼层" align="center">
+					<template slot-scope="scope">
+						<span>{{scope.row.floor}}F</span>
+					</template>
+				</el-table-column>
+				<el-table-column prop="window" label="窗户" align="center"></el-table-column>
+				<el-table-column prop="bed" label="床" align="center"></el-table-column>
+				<!-- <el-table-column prop="htext" label="描述" align="center"></el-table-column> -->
+				<el-table-column prop="tname" label="房型" align="center"></el-table-column>
+				<el-table-column label="操作" align="center" width="180px">
+					<template slot-scope="scope">
+						<el-button size="small" type="primary" @click="toupdate(scope.$index, show=true, url='update', action='修改')">修改</el-button>
+						<el-button size="small" type="danger" @click="deletehinfo(scope.$index)">删除</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+			<el-row style="margin-top: 5px;">
+				<el-col :xs="3" :sm="3">
+					<el-button type="danger" size="medium" @click="deleteList">删除选中项</el-button>
+				</el-col>
+				<el-col :xs="15" :sm="15">
+					<el-pagination :current-page.sync="curpage" :page-size.sync="line" :page-sizes="pagelist"
+						layout="total, sizes, prev, pager, next, jumper" :total="total">
+					 </el-pagination>
+				</el-col>
+				<el-col :xs="6" :sm="6" style="text-align: right;">
+					<el-button type="primary" size="medium" style="width: 180px;" @click="toinsert(show=true, url='insert', action='录入')">添加</el-button>
+				</el-col>
+			</el-row>
+			<el-dialog :title="action" :visible.sync="show">
+				<el-form ref="form" :model="hinfo" label-width="80px" size="mini">
+					<el-form-item label="房号">
+						<el-input v-model="hinfo.hid"></el-input>
+					</el-form-item>
+					<el-form-item label="面积">
+						<el-input v-model="hinfo.area"></el-input>
+					</el-form-item>
+					<el-form-item label="楼层">
+						<el-input v-model="hinfo.floor"></el-input>
+					</el-form-item>
+					<el-form-item label="窗户">
+						<el-select v-model="hinfo.window" placeholder="请选择窗户">
+							<el-option label="有窗" value="有窗"></el-option>
+							<el-option label="无窗" value="无窗"></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="床">
+						<el-input v-model="hinfo.bed"></el-input>
+					</el-form-item>
+					<el-form-item label="描述">
+						<el-input v-model="hinfo.htext" type='textarea'></el-input>
+					</el-form-item>
+					<el-form-item label="房型" >
+						<el-select v-model="hinfo.tid" placeholder="请选择房型">
+							<el-option :label="types.tname" v-for="types in typesList" :value="types.tid"></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item size="large">
+						<el-button type="primary" size="medium" @click="modify">保存</el-button>
+					</el-form-item>
+				</el-form>
+			</el-dialog>
+		</div>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el: "#app",
+				data: {
+					show: false,
+					url: '',
+					action: '',
+					hinfo: {},
+					list: [],
+					curpage: 1,
+					total: 0,
+					pagelist: [3,4,5],
+					line: 3,
+					typesList: [],
+				},
+				created: function() {
+					axios.post("hinfo/selectTotal").then(res=>{
+						this.total = res.data;
+					})
+					axios.post("types/selectList").then(res=>{
+						this.typesList = res.data;
+					})
+				},
+				computed: {
+					totalpage: function() {
+						return parseInt((this.line-1+this.total)/this.line);
+					},
+					param: function() {
+						return "page="+this.curpage+"&line="+this.line;
+					}
+				},
+				watch: {
+					curpage: function() {
+						this.selectByPage();
+					},
+					line: function() {
+						if(this.curpage>this.totalpage){
+							this.curpage = this.totalpage;
+						}else{
+							this.selectByPage();
+						}
+					},
+					total: function() {
+						if(this.curpage>this.totalpage && this.totalpage!=0){
+							this.curpage = this.totalpage;
+						}else{
+							this.selectByPage();
+						}
+					}
+				},
+				methods: {
+					selectByPage: function() {
+						if(this.total==0){
+							this.list = [];
+							return;
+						}
+						axios.post("hinfo/selectByPage?"+this.param).then(res=>{
+							this.list = res.data;
+						});
+					},
+					deletehinfo: function(i) {
+						this.$confirm("确认删除？", "提示", {
+							confirmButtonText: "确定",
+							cancelButtonText: "取消",
+							type: "warning"
+						}).then(()=>{
+							axios.post("hinfo/delete?hid="+this.list[i].hid).then(res=>{
+								if(res.data=="1"){
+									this.$message({
+										type: "success",
+										message: "操作成功！"
+									});
+									this.list.splice(i, 1);
+									this.total -= 1;
+								}else{
+									this.$message({
+										type: "error",
+										message: "操作失败！"
+									});
+								}
+							})
+						}).catch(() => {
+							this.$message({
+								type: "info",
+								message: "已取消删除！"
+							});          
+						});
+					},
+					toinsert: function() {
+						this.hinfo = {};
+					},
+					toupdate: function(i) {
+						this.hinfo = this.list[i];
+					},
+					modify: function() {
+						axios.post("hinfo/"+this.url, this.hinfo).then(res=>{
+							if(res.data=="1"){
+								this.$message({
+									type: "success",
+									message: "操作成功！"
+								});
+								if(this.url.lastIndexOf("insert")>=0){
+									this.total += 1;
+									this.hinfo = {};
+								}else{
+									//this.selectByPage();
+								}
+							}else{
+								this.$message({
+									type: "error",
+									message: "操作失败！"
+								});
+							}
+						})
+					},
+					deleteList: function() {
+						let selections = this.$refs.hinfos.selection;
+						if(selections.length==0){
+							this.$message({
+								type: "error",
+								message: "必须选中一行！"
+							});
+							return;
+						}
+						let hids = [];
+						for(let i=0; i<selections.length; i++){
+							hids.push(selections[i].hid);
+						}
+						this.$confirm("是否删除所有选中项？", "提示", {
+							confirmButtonText: "确定",
+							cancelButtonText: "取消",
+							type: "warning"
+						}).then(()=>{
+							var params = new URLSearchParams();
+							params.append("hids", hids);
+							axios.post("hinfo/deleteList", params).then(res=>{
+								if(res.data=="1"){
+									this.total -= hids.length;
+									this.$message({
+										type: "success",
+										message: "删除成功！"
+									});
+								}else{
+									this.$message({
+										type: "error",
+										message: "删除失败！"
+									});
+								}
+							})
+						}).catch(() => {
+							this.$message({
+								type: "info",
+								message: "已取消删除！"
+							});
+						});
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

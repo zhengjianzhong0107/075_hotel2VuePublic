@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.dao.HorderDao">
+	<resultMap type="com.etc.model.Horder" id="ho">
+		<result property="oid" column="oid"/>
+		<result property="userid" column="userid"/>
+		<result property="tid" column="tid"/>
+		<result property="otime" column="otime"/>
+		<result property="starttime" column="starttime"/>
+		<result property="endtime" column="endtime"/>
+		<result property="days" column="days"/>
+		<result property="total" column="total"/>
+		<result property="beizhu" column="beizhu"/>
+		<result property="lxname" column="lxname"/>
+		<result property="lxtel" column="lxtel"/>
+		<result property="lccard" column="lccard"/>
+		<result property="state" column="state"/>
+		<result property="image" column="image"/>
+		<result property="tname" column="tname"/>
+	</resultMap>
+	
+ 	<insert id="insert" parameterType="horder">
+ 		insert into horder values(#{oid},#{userid},#{tid},now(),#{starttime},#{endtime},#{days},#{total},#{beizhu},#{lxname},#{lxtel},#{lccard},1)
+	</insert>
+	
+ 	<update id="update" parameterType="horder">
+ 		update horder set state=#{state}
+ 		where oid=#{oid}
+	</update>
+ 	
+	<delete id="delete" parameterType="string">
+		delete from horder where oid=#{oid}
+ 	</delete>
+ 	
+	<select id="selectOne" resultMap="ho" parameterType="string">
+		SELECT * FROM horder,TYPES WHERE types.tid=horder.tid AND oid=#{oid}
+ 	</select>
+
+	<select id="selectUserId" resultMap="ho" parameterType="string">
+		SELECT * FROM horder,TYPES WHERE types.tid=horder.tid AND userid=#{userid}
+ 	</select>
+	<select id="selectList" resultMap="ho">
+		SELECT * FROM horder,TYPES WHERE types.tid=horder.tid and state not in(2,4)
+ 	</select>
+	<select id="total" resultType="int">
+		select count(*) from horder
+ 	</select> 	
+ 	
+	<select id="selectByPage" resultMap="ho" parameterType="hashmap">		
+		SELECT * FROM horder,TYPES WHERE types.tid=horder.tid order by otime desc limit ${min},${max}
+ 	</select>
+ 	
+	<delete id="deleteList" >
+		delete from horder where oid in
+		<foreach item="oid" collection="array" 
+		 open="(" close=")" separator=",">
+		 #{oid}
+		</foreach>
+ 	</delete>
+ 	
+	<select id="selectByProperty" resultMap="ho" parameterType="hashmap">		
+		select * from horder where ${pname}=#{val}
+ 	</select>
+	<select id="selectYuNum" parameterType="horder" resultType="int" >
+ 		select t.num-o.cnt from types t,
+ 			(SELECT COUNT(*) cnt FROM horder
+ 			 WHERE endtime<![CDATA[>]]>#{starttime} AND starttime <![CDATA[<]]> #{endtime}
+ 			  AND tid=#{tid} ) o where t.tid=#{tid}
+ 	</select>
+</mapper>
+

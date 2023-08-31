@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.dao.HotelDao">
+	<resultMap type="com.etc.model.Hotel" id="ho">
+		<result property="hid" column="hid"/>
+		<result property="htitle" column="htitle"/>
+		<result property="address" column="address"/>
+		<result property="htext" column="htext"/>
+		<result property="htel" column="htel"/>
+		<result property="jingdu" column="jingdu"/>
+		<result property="weidu" column="weidu"/>
+		<result property="star" column="star"/>
+	</resultMap>
+	
+ 	<insert id="insert" parameterType="hotel">
+ 		insert into hotel values(#{hid},#{htitle},#{address},#{htext},#{htel},#{jingdu},#{weidu},#{star})
+	</insert>
+	
+ 	<update id="update" parameterType="hotel">
+ 		update hotel set htitle=#{htitle},address=#{address},htext=#{htext},htel=#{htel},jingdu=#{jingdu},weidu=#{weidu},star=#{star} 
+ 		where hid=#{hid}
+	</update>
+ 	
+	<delete id="delete" parameterType="int">
+		delete from hotel where hid=#{hid}
+ 	</delete>
+ 	
+	<select id="selectOne" resultMap="ho" parameterType="int">
+		select * from hotel where hid=#{hid}
+ 	</select>
+ 	
+	<select id="selectList" resultMap="ho">
+		select * from hotel
+ 	</select>
+ 	
+	<select id="total" resultType="int">
+		select count(*) from hotel
+ 	</select> 	
+ 	
+	<select id="selectByPage" resultMap="ho" parameterType="hashmap">		
+		select * from hotel limit ${min},${max}
+ 	</select>
+ 	
+	<delete id="deleteList" >
+		delete from hotel where hid in
+		<foreach item="hid" collection="array" 
+		 open="(" close=")" separator=",">
+		 #{hid}
+		</foreach>
+ 	</delete>
+ 	
+	<select id="selectByProperty" resultMap="ho" parameterType="hashmap">		
+		select * from hotel where ${pname}=#{val}
+ 	</select>
+ 	
+</mapper>
+

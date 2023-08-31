@@ -1,0 +1,22 @@
+server:
+  port: 8075
+
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/hotelvue2?characterEncoding=utf8
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root
+
+mybatis:
+  type-aliases-package: com.etc.model
+  mapper-locations: classpath:mapper/*.xml
+
+
+logging:
+  level:
+    com:
+      etc:
+        dao: trace
+  pattern:
+    console: ~%date{yyyy-MM-dd} [%thread] %-5level %logger{36} - %msg%n
